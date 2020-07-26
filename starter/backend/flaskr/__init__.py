@@ -160,17 +160,13 @@ def create_app(test_config=None):
     try: 
       body =request.get_json()
       search_term = body['searchTerm']
-      if (search_term == ""):
-        abort(404)
-      result_questions=[]
-      questions=Question.query.all()
-      for question in questions:
-        if  re.search(search_term, question.question, re.IGNORECASE):
-          result_questions.append(question.format())
+      if not(search_term):
+        abort(422)
+      result_questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
       
       return jsonify({
         "success": True,
-        "questions": result_questions,
+        "questions": [question.format() for question in result_questions],
         "total_questions": len(result_questions),
       })
     except:
@@ -225,10 +221,8 @@ def create_app(test_config=None):
       
       if not question:
         return jsonify({
-           'success': True,
            'finish_quiz': True
         })
-
       return jsonify({
         'success': True,
         'question': question.format()

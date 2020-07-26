@@ -5,6 +5,7 @@ venv
 # OS generated files #
 ######################
 .DS_Store
+/frontend/node_modules/
 .DS_Store?
 ._*
 .Spotlight-V100
